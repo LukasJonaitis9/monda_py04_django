@@ -6,6 +6,6 @@ class TasksConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'tasks'
 
-    Class Meta:
+    class Meta:
         verbose_name = _('tasks')
     
