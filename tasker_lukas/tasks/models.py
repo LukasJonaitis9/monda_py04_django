@@ -25,7 +25,7 @@ class Project(models.Model):
     def get_absolute_url(self):
         return reverse("project_detail", kwargs={"pk": self.pk})
 
-class Tasks(models.Model):
+class Task(models.Model):
     name = models.CharField(_("name"), max_length=100, db_index=True)
     description = models.TextField(_("description"), blank = True, max_length = 10000)
     project = models.ForeignKey(

@@ -29,7 +29,7 @@ class ProjectAdmin(admin.ModelAdmin):
     recent_tasks.short_description = _("recent tasks")
 
 
-class TasksAdmin(admin.ModelAdmin):
+class TaskAdmin(admin.ModelAdmin):
     list_display = ['name', 'is_done', 'deadline', 'project', 'owner', 'created_at']
     list_filter = ['is_done', 'deadline', 'created_at']
     search_fields = ['name', 'description', 'project__name', 'owner__last_name', 'owner__username']
@@ -57,4 +57,4 @@ class TasksAdmin(admin.ModelAdmin):
 
 
 admin.site.register(models.Project, ProjectAdmin)
-admin.site.register(models.Tasks, TasksAdmin)
+admin.site.register(models.Task, TaskAdmin)
