@@ -8,11 +8,10 @@ class Project(models.Model):
     name = models.CharField(_("name"), max_length=100, db_index=True)
     owner = models.ForeignKey(
         get_user_model(), 
-        on_delete=models.CASCADE, 
         verbose_name=_("owner"), 
+        on_delete=models.CASCADE,
         related_name='projects',
     )
-    
 
     class Meta:
         verbose_name = _("project")
@@ -25,30 +24,29 @@ class Project(models.Model):
     def get_absolute_url(self):
         return reverse("project_detail", kwargs={"pk": self.pk})
 
+
 class Task(models.Model):
     name = models.CharField(_("name"), max_length=100, db_index=True)
-    description = models.TextField(_("description"), blank = True, max_length = 10000)
+    description = models.TextField(_("description"), blank=True, max_length=10000)
     project = models.ForeignKey(
-        Project, 
-        verbose_name=_("project"),
-        on_delete=models.CASCADE,
-        related_name = 'tasks'
-        )
-    
-    owner = models.ForeignKey(
-        get_user_model(), 
+        Project,
         verbose_name=_("project"), 
         on_delete=models.CASCADE,
-        related_name = 'tasks_owner'
-        )
-    
-    created_at = models.DateField(_("created at"), auto_now_add=False, db_index = True)
-    updated_at = models.DateField(_("updated at"), auto_now=True, db_index = True)
-    is_done = models.BooleanField(_('is done'), default=False, db_index=True)
+        related_name='tasks',
+    )
+    owner = models.ForeignKey(
+        get_user_model(), 
+        verbose_name=_("owner"), 
+        on_delete=models.CASCADE,
+        related_name='tasks'
+    )
+    created_at = models.DateTimeField(_("created at"), auto_now_add=True, db_index=True)
+    updated_at = models.DateTimeField(_("updated at"), auto_now=True, db_index=True)
+    is_done = models.BooleanField(_("is done"), default=False, db_index=True)
     deadline = models.DateTimeField(_("deadline"), null=True, blank=True, db_index=True)
 
     class Meta:
-        verbose_name = _("tasks")
+        verbose_name = _("task")
         verbose_name_plural = _("tasks")
         ordering = ['is_done', '-created_at']
 
@@ -56,4 +54,4 @@ class Task(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse("tasks_detail", kwargs={"pk": self.pk})
+        return reverse("task_detail", kwargs={"pk": self.pk})

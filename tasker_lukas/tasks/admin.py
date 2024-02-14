@@ -34,7 +34,7 @@ class TaskAdmin(admin.ModelAdmin):
     list_filter = ['is_done', 'deadline', 'created_at']
     search_fields = ['name', 'description', 'project__name', 'owner__last_name', 'owner__username']
     list_editable = ['is_done', 'owner', 'project']
-    readonly_fields = ['id', 'updated_at']
+    readonly_fields = ['id', 'created_at', 'updated_at']
     fieldsets = (
         (_("general").title(), {
             "fields": (
