@@ -39,11 +39,11 @@ class Tasks(models.Model):
         get_user_model(), 
         verbose_name=_("project"), 
         on_delete=models.CASCADE,
-        related_name = 'tasks'
+        related_name = 'tasks_owner'
         )
     
     created_at = models.DateField(_("created at"), auto_now_add=False, db_index = True)
-    updated_at = models.DateField(_("updated at"), auto_now=False, db_index = True)
+    updated_at = models.DateField(_("updated at"), auto_now=True, db_index = True)
     is_done = models.BooleanField(_('is done'), default=False, db_index=True)
     deadline = models.DateTimeField(_("deadline"), null=True, blank=True, db_index=True)
 
