@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-02-15 09:42+0000\n"
+"POT-Creation-Date: 2024-02-15 10:44+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,6 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n % 10 == 1 && (n % 100 > 19 || n % 100 < "
 "11) ? 0 : (n % 10 >= 2 && n % 10 <=9) && (n % 100 > 19 || n % 100 < 11) ? "
 "1 : n % 1 != 0 ? 2: 3);\n"
+
 #: tasks/admin.py:21
 msgid "total tasks"
 msgstr "viso užduočių"
@@ -43,23 +44,26 @@ msgstr "nuosavybė"
 msgid "temporal tracking"
 msgstr "laiko sekimas"
 
-#: tasks/apps.py:9 tasks/models.py:50
+#: tasks/apps.py:7 tasks/models.py:50 tasks/templates/base.html:14
+#: tasks/templates/tasks/index.html:6 tasks/templates/tasks/task_list.html:4
 msgid "tasks"
 msgstr "užduotys"
 
-#: tasks/models.py:8 tasks/models.py:29
+#: tasks/models.py:8 tasks/models.py:29 tasks/templates/tasks/task_list.html:7
 msgid "name"
 msgstr "pavadinimas"
 
 #: tasks/models.py:11 tasks/models.py:39
+#: tasks/templates/tasks/task_detail.html:8
 msgid "owner"
 msgstr "nuosavybė"
 
 #: tasks/models.py:17 tasks/models.py:33
+#: tasks/templates/tasks/task_detail.html:8
 msgid "project"
 msgstr "projektas"
 
-#: tasks/models.py:18
+#: tasks/models.py:18 tasks/templates/tasks/index.html:5
 msgid "projects"
 msgstr "projektai"
 
@@ -79,22 +83,50 @@ msgstr "atnaujinta"
 msgid "is done"
 msgstr "atlikta"
 
-#: tasks/models.py:46
+#: tasks/models.py:46 tasks/templates/tasks/task_detail.html:9
+#: tasks/templates/tasks/task_list.html:4
+#: tasks/templates/tasks/task_list.html:8
 msgid "deadline"
 msgstr "terminas"
 
-#: tasks/models.py:49
+#: tasks/models.py:49 tasks/views.py:30
 msgid "task"
 msgstr "užduotis"
 
-#: task/models.py:32
+#: tasks/templates/base.html:13 tasks/templates/tasks/index.html:3
+msgid "dashboard"
+msgstr "suvestinė"
+
+#: tasks/templates/base.html:26
+msgid "community on discord"
+msgstr "discord bendruomenė"
+
+#: tasks/templates/tasks/index.html:4
+msgid "users"
+msgstr "vartotojai"
+
+#: tasks/templates/tasks/task_detail.html:11
+#| msgid "created at"
+msgid "created"
+msgstr "sukurta"
+
+#: tasks/templates/tasks/task_detail.html:12
+#| msgid "updated at"
+msgid "updated"
+msgstr "atnaujinta"
+
+#: tasks/templates/tasks/task_list.html:2
+msgid "list"
+msgstr "sąrašas"
+
+#: tasks/views.py:32
 msgid "marked as"
 msgstr "pažymėta kaip"
 
-#: task/models.py:33
+#: tasks/views.py:33
 msgid "done"
 msgstr "atlikta"
 
-#: task/models.py:33
+#: tasks/views.py:33
 msgid "undone"
 msgstr "neatlikta"
