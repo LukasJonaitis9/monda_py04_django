@@ -2,6 +2,9 @@
 {% block title %}{{ block.super }} {% trans "projects" %}{% endblock title %}
 {% block content %}
 <h1>{% trans "projects"|capfirst %}</h1>
+<div class="toolbar">
+    <a class="button" href="{% url "project_create" %}">{% trans "create new"|capfirst %}</a>
+</div>
 <ul>
 {% for project in project_list %}
     <li>

@@ -33,6 +33,39 @@ class ProjectCreateView(LoginRequiredMixin, generic.CreateView):
         return super().form_valid(form)
 
 
+class ProjectUpdateView(LoginRequiredMixin,
+        UserPassesTestMixin,
+        generic.UpdateView,
+    ):
+    model = models.Project
+    template_name = 'tasks/project_update.html'
+    fields = ('name',)
+
+    def get_success_url(self) -> str:
+        messages.success(self.request,
+            _('project updated succesfully').capitalize())
+        return reverse('project_list')
+    
+    def test_func(self) -> bool | None:
+        return self.get_object().owner == self.request.user
+    
+    
+class ProjectDeleteView(LoginRequiredMixin,
+        UserPassesTestMixin,
+        generic.DeleteView,
+    ):
+    model = models.Project
+    template_name = 'tasks/project_delete.html'
+
+    def get_success_url(self) -> str:
+        messages.success(self.request,
+            _('project deleted succesfully').capitalize())
+        return reverse('project_list')
+    
+    def test_func(self) -> bool | None:
+        return self.get_object().owner == self.request.user
+
+
 def index(request: HttpRequest) -> HttpResponse:
     context = {
         'projects_count': models.Project.objects.count(),
