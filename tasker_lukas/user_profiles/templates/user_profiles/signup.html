@@ -2,9 +2,9 @@
 {% block title %}{% trans "signup for"|capfirst %}{{ block.super }}{% endblock title %}
 {% block content %}
 <h1>{% trans "signup for"|capfirst %} TASKer</h1>
-<form mothod = "post" action ="{{ request.path }}">
+<form method="post" action="{{ request.path }}">
     {% csrf_token %}
     {{ form.as_p }}
-    <p><button type = "submit" >{% trans "register account"|title %}</button></p>
+    <p><button type="submit">{% trans "register account"|title %}</button></p>
 </form>
 {% endblock content %}

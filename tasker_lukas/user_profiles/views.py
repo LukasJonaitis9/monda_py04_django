@@ -27,6 +27,6 @@ def user_detail(request: HttpRequest, username: str | None = None) -> HttpRespon
         user = get_object_or_404(User, username=username)
     else:
         user = request.user
-    return render(request, 'user_profile/user_detail.html', {
+    return render(request, 'user_profiles/user_detail.html', {
         'object': user,
     })
