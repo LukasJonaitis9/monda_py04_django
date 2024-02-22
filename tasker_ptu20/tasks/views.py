@@ -9,6 +9,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views import generic
+from datetime import datetime
 from . import models, forms
 
 
@@ -82,10 +83,21 @@ class ProjectDeleteView(LoginRequiredMixin,
 
 
 def index(request: HttpRequest) -> HttpResponse:
+    tasks = models.Task.objects
+    undone_tasks = tasks.filter(is_done = False)
+    common_dashboard = [
+        (_('users').title(), get_user_model().objects.count()),
+        (_('projects').title(), models.Project.objects.count(), reverse('project_list')),
+        (_('tasks').title(), tasks.count(), reverse('task_list')),
+        (_('undone tasks').title(), undone_tasks.count()),
+        (_('overdue tasks').title(), undone_tasks.filter(deadline_lte=datetime.now()).count()),
+        (_('done tasks').title(), tasks.filter(is_done=True).count()),
+
+    ]
+
     context = {
-        'projects_count': models.Project.objects.count(),
-        'tasks_count': models.Task.objects.count(),
-        'users_count': models.get_user_model().objects.count(),
+        'common_dashboard' : common_dashboard,
+
     }
     return render(request, 'tasks/index.html', context)
 
@@ -118,14 +130,20 @@ def task_detail(request: HttpRequest, pk: int) -> HttpResponse:
 
 def task_done(request: HttpRequest, pk: int) -> HttpResponse:
     task = get_object_or_404(models.Task, pk=pk)
-    task.is_done = not task.is_done
-    task.save()
-    messages.success(request, "{} {} {} {}".format(
-        _('task').capitalize(),
-        task.name,
-        _('marked as'),
-        _('done') if task.is_done else _('undone'),
+    if request.user in [task.owner, task.project.owner]:
+        task.is_done = not task.is_done
+        task.save()
+        messages.success(request, "{} {} {} {}".format(
+            _('task').capitalize(),
+            task.name,
+            _('marked as'),
+            _('done') if task.is_done else _('undone'),
     ))
+    else: 
+        messages.error(request, "{}: {}".format(
+            _('permission error').title(),
+            _('you must be owner of either the task itself or it\'s project '),
+        ))
     if request.GET.get('next'):
         return redirect(request.GET.get('next'))
     return redirect(task_list)

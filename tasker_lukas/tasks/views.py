@@ -9,6 +9,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views import generic
+from datetime import datetime
 from . import models, forms
 
 
@@ -82,10 +83,19 @@ class ProjectDeleteView(LoginRequiredMixin,
 
 
 def index(request: HttpRequest) -> HttpResponse:
+    tasks = models.Task.objects
+    undone_tasks = tasks.filter(is_done = False)
+    common_dashboard = [
+        (_('users').title(), get_user_model().objects.count()),
+        (_('projects').title(), models.Project.objects.count(), reverse('project_list')),
+        (_('tasks').title(), tasks.count(), reverse('task_list')),
+        (_('undone tasks').title(), undone_tasks.count()),
+        (_('overdue tasks').title(), undone_tasks.filter(deadline_lte=datetime.now()).count()),
+        (_('done tasks').title(), tasks.filter(is_done=True).count()),
+    ]
+
     context = {
-        'projects_count': models.Project.objects.count(),
-        'tasks_count': models.Task.objects.count(),
-        'users_count': models.get_user_model().objects.count(),
+        'common_dashboard' : common_dashboard,
     }
     return render(request, 'tasks/index.html', context)
 
@@ -154,7 +164,9 @@ def task_update(request: HttpRequest, pk: int) -> HttpResponse:
         if form.is_valid():
             form.save()
             messages.success(request, _("task edited successfully").capitalize())
-            return redirect('task_detail', pk=pk)
+            if request.GET.get('next'):
+                return redirect(request.GET.get('next'))
+            return redirect('task_list')
     else:
         form = forms.TaskForm(instance=task)
     form.fields['project'].queryset = form.fields['project'].queryset.filter(owner=request.user)
@@ -165,6 +177,8 @@ def task_delete(request: HttpRequest, pk: int) -> HttpResponse:
     task = get_object_or_404(models.Task, pk=pk, owner=request.user)
     if request.method == "POST":
         task.delete()
-        messages.success(request, _("task deleted successfully"))
+        messages.success(request, _("task deleted successfully").capitalize())
+        if request.GET.get('next'):
+            return redirect(request.GET.get('next'))
         return redirect('task_list')
-    return render(request, 'tasks/task_delete.html', {'task': task})
+    return render(request, "tasks/task_delete.html", {'task': task, 'object': task})
