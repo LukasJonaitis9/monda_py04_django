@@ -84,20 +84,63 @@ class ProjectDeleteView(LoginRequiredMixin,
 
 def index(request: HttpRequest) -> HttpResponse:
     tasks = models.Task.objects
-    undone_tasks = tasks.filter(is_done = False)
+    undone_tasks = tasks.filter(is_done=False)
     common_dashboard = [
         (_('users').title(), get_user_model().objects.count()),
-        (_('projects').title(), models.Project.objects.count(), reverse('project_list')),
-        (_('tasks').title(), tasks.count(), reverse('task_list')),
-        (_('undone tasks').title(), undone_tasks.count()),
-        (_('overdue tasks').title(), undone_tasks.filter(deadline_lte=datetime.now()).count()),
-        (_('done tasks').title(), tasks.filter(is_done=True).count()),
-
+        (
+            _('projects').title(), 
+            models.Project.objects.count(), 
+            reverse('project_list'),
+        ),
+        (
+            _('tasks').title(),
+            tasks.count(),
+            reverse('task_list'),
+        ),
+        (
+            _('undone tasks').title(),
+            undone_tasks.count(),
+        ),
+        (
+            _('overdue tasks').title(),
+            undone_tasks.filter(deadline__lte=datetime.now()).count(),
+        ),
+        (
+            _('done tasks').title(),
+            tasks.filter(is_done=True).count(),
+        )
     ]
-
+    if request.user.is_authenticated:
+        user_tasks = tasks.filter(owner=request.user)
+        user_undone_tasks = user_tasks.filter(is_done=False)
+        user_dashboard = [
+            (
+                _('projects').title(),
+                models.Project.objects.filter(owner=request.user).count(),
+                reverse('project_list') + f"?owner={request.user.username}",
+            ),
+            (
+                _('tasks').title(),
+                user_tasks.count(),
+                reverse('task_list') + f"?owner={request.user.username}",
+            ),
+            (
+                _('undone tasks').title(),
+                user_undone_tasks.count(),
+            ),
+            (
+                _('overdue tasks').title(),
+                user_undone_tasks.filter(is_done=False).count(),
+            ),
+        ]
+        undone_tasks = user_undone_tasks.all()[:5]
+    else:
+        user_dashboard = None
+        undone_tasks = undone_tasks.all()[:5]
     context = {
-        'common_dashboard' : common_dashboard,
-
+        'common_dashboard': common_dashboard,
+        'user_dashboard': user_dashboard,
+        'undone_tasks': undone_tasks,
     }
     return render(request, 'tasks/index.html', context)
 
@@ -138,11 +181,11 @@ def task_done(request: HttpRequest, pk: int) -> HttpResponse:
             task.name,
             _('marked as'),
             _('done') if task.is_done else _('undone'),
-    ))
-    else: 
+        ))
+    else:
         messages.error(request, "{}: {}".format(
             _('permission error').title(),
-            _('you must be owner of either the task itself or it\'s project '),
+            _('you must be the owner of either the task itself or it\'s project'),
         ))
     if request.GET.get('next'):
         return redirect(request.GET.get('next'))
