@@ -1,4 +1,4 @@
-{% extends "base.html" %}{% load i18n %}
+{% extends "base.html" %}{% load static i18n %}
 {% block content %}
 <h2>{% trans "common dashboard"|title %}</h2>
 <ul class="dashboard">
@@ -6,7 +6,7 @@
     <li>{% if metric.2 %}<a href="{{ metric.2}}">{% endif %}
         <h3>{{ metric.0 }}</h3>
         <span class="stat">{{ metric.1 }}</span>
-        {% if metric.2 %}</a>{% endif %}</li>
+    {% if metric.2 %}</a>{% endif %}</li>
     {% endfor %}
 </ul>
 <h2>{% trans "user dashboard"|title %}</h2>
@@ -15,17 +15,19 @@
     <li>{% if metric.2 %}<a href="{{ metric.2}}">{% endif %}
         <h3>{{ metric.0 }}</h3>
         <span class="stat">{{ metric.1 }}</span>
-        {% if metric.2 %}</a>{% endif %}</li>
+    {% if metric.2 %}</a>{% endif %}</li>
     {% empty %}
-    <li><h3>{% trans "login required" %}</h3>
-        <span class="stat">{% trans "nothing here" %}</span></li>
+    <li>
+        <h3>{% trans "login required" %}</h3>
+        <span class="stat">{% trans "nothing here" %}</span>
+    </li>
     {% endfor %}
 </ul>
 <h2>{% trans "newest things to do"|title %}</h2>
 <ul>
 {% for task in undone_tasks %}
-    <li><a href="{% url "task_done" task.pk %}?next={{ next|urlencode }}">&#x2610;</a>
-        <a href="{% url "task_detail" task.pk %}">{{ task.name }}</a>
+    <li><a href="{% url "task_done" task.pk %}?next={{ "/"|urlencode }}">&#x2610;</a>
+        <a href="{% url "task_detail" task.pk %}?next={{ "/"|urlencode }}">{{ task.name }}</a>
         <span style="float:right;">{{ task.deadline }}</span>
     </li>
 {% empty %}
